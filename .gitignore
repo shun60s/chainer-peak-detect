@@ -1,0 +1,15 @@
+/__pycahe__/
+/old/
+/dataset/
+/result/
+/result_241773_delta0_5_MLP/
+/result_18975_delta1_0_MLP/
+/result_4830_delta1_5_MLP/
+/result_18975_delta1_0_CNN/
+/result_241773_delta0_5_CNN/
+*.bat
+*.pyc
+*.md~
+*.py~
+*.*~
+*.pdf
