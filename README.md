@@ -39,7 +39,9 @@
 python make_dataset.py -d 1.0　train用のデータセットの作成  
 python make_dataset.py -d 1.5  test用のデータセットの作成  
 python train.py -d 1.0 -e 1000  1000エポック回、学習する  
-python log_plot.py　損失のプロット（任意）
+python log_plot.py　損失のプロット（任意）  
+
+ここではchainer 3.2.0を使っています。chainerのバージョンが違うとエラーが発生するかもしれない。  
 
 ## 結果  
   

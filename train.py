@@ -20,7 +20,7 @@ import argparse
 import chainer
 import chainer.functions as F
 import chainer.links as L
-from chainer import training
+from chainer import training, cuda
 from chainer.training import extensions
 from chainer.functions.loss.mean_squared_error import mean_squared_error
 from chainer.functions.loss.mean_absolute_error import mean_absolute_error
@@ -150,6 +150,7 @@ def main():
         chainer.cuda.get_device_from_id(args.gpu).use()
         model.to_gpu()  # Copy the model to the GPU
 
+
     # Setup an optimizer
     optimizer = chainer.optimizers.Adam(alpha=0.001) #alpha=0.0001) 
     optimizer.setup(model)
@@ -203,16 +204,24 @@ def main():
     trainer.run()
     
     # Accuracy rate
+    print('checking accuracy rate... ') # transfer one by one data will take long time. It needs to improvement.
     c0=0
     for loop in range(train.__len__()):
         x1=train.get_example(loop)
-        x_batch = np.asarray([x1[0]])
-        y=model.predictor(x_batch)
+        if args.gpu >= 0: # gpu
+            x_batch = cuda.cupy.asarray([x1[0]])
+            y_gpu=model.predictor(x_batch)
+            y=cuda.to_cpu(y_gpu.data)
+        else:  # cpu
+            x_batch = np.asarray([x1[0]])
+            y_cpu=model.predictor(x_batch)
+            y=y_cpu.data[0]
+        
         #print ('input ',  x1[0] )
-        #print ('   predicted ', y.data[0], '(', np.round(y.data[0]) , ')', 'correct ', x1[1] )
+        #print ('   predicted ', y, '(', np.round(y) , ')', 'correct ', x1[1] )
         # 正解率、周波数のindex[整数]を指すことを想定しているので、四捨五入して一致していればＯＫとした。
         
-        if np.round(y.data[0]) == np.round(x1[1]):
+        if np.round(y) == np.round(x1[1]):
             c0+= 1
     print ('Accuracy rate (index is equal, ratio[%]) ', (c0 * 100.0 / train.__len__() )   )
 
