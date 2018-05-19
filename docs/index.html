@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ディープラーニングフレームワークのchainerによるピーク位置の推定    </title>
+<meta name="description" content="ピークの位置(index)の推定" />
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-lg px-3 my-5 markdown-body">
+<h1>ディープラーニングフレームワークのchainerによるピーク位置の推定    </h1>
+
+
+<h2>内容   </h2>
+
+<p>凸型のピークをもつ１Ｄデータの左端の第１ピークの位置(index)を推定する。<br />
+下図に１Ｄデータの例を示す。<br />
+<img src="1D_peak_sample.png" alt="1Dデータ" ><br /></p>
+
+<h2>学習モデル  </h2>
+
+<p>入力64次元。5層のFCで中間層のユニット数は100。出力1次元。<br />
+学習する未知パラメーターの数は36901個ある。<br />
+<img src="cg_MLP-small.png" alt="モデル可視化" ><br />
+モデルを可視化したグラフがdocsホルダーの中にあります。(cg_MLP.png)<br /></p>
+
+<h2>学習サンプル数と損失の関係  </h2>
+
+<p>学習サンプル数を、4830個(-d 1.5), 18975個(-d 1.0), 241773個(-d 0.5)と変化させたときの損失(main/loss)の様子を下図に示す。<br />
+<img src="learning_sample_number_vs_convergence.png" alt="サンプル数毎の収束度合い" ><br /></p>
+
+<p>学習サンプル数が少ないと(4830,18975)、損失はより大きな値で止まり下がりきらない。 
+学習サンプル数は学習する未知パラメーター数よりも十分大きいものが必要のようだ。<br /></p>
+
+
+<h2>プログラムとオプション  </h2>
+
+<ul>
+<li>make_dataset.py　データセットを作成する  </li>
+<li>train.py  chainerで学習する  </li>
+<li>log_plot.py chainerのlog出力の中の損失をまとめてプロットする  </li>
+</ul>
+
+
+<h3>オプション  </h3>
+
+<ul>
+<li>-d 　分割する幅を示す。値が小さいほど、細かく分割して、サンプル数が増す。　　</li>
+</ul>
+
+<h3>動作例</h3>
+
+<p>python make_dataset.py -d 1.0　train用のデータセットの作成<br />
+python make_dataset.py -d 1.5  test用のデータセットの作成<br />
+python train.py -d 1.0 -e 1000  1000エポック回、学習する<br />
+python log_plot.py　損失のプロット（任意）<br /></p>
+
+<p>ここではchainer 3.2.0を使っています。chainerのバージョンが違うとエラーが発生するかもしれない。<br /></p>
+
+<h2>結果  </h2>
+
+<p>学習サンプルを使っての判定でも正解率85～95%とよくない。<br /></p>
+
+<h2>ライセンス  </h2>
+
+<p>train.pyとplot_report_logscale.pyはchainerのレポジトリにあるものを変更したものです。chainerのライセンスについては、LICENSE-chainer.txtを見てください。<br />
+上記以外は、MITライセンスに従います。<br /></p>
+
+</div>
+</body>
+</html>
